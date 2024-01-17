@@ -4,42 +4,43 @@ using UnityEngine;
 
 public class Weapon
 {
-    int AK47_Damage = 20;
-    int AWP_Damage = 10;
-    int MP5_Damage = 8;
-
+    int damage_Pistol = 10;
+    int damage_AK47 = 8;
+    //syntax of a property: Acces Modifier, Type, Name of the Property
+    //Rule is that the property is the same name as the field variable
+    //After the property create a braces, like a function, inside it is where we put our property accessors
+    //A property can have 2 accessor: "get" and "set"
+    public int Damage_Pistol
+    {
+        get { return damage_Pistol; }
+        set { damage_Pistol = value; }
+    }
     public int Damage_AK47
     {
-        get { return AK47_Damage; }
-        set { AK47_Damage = value; }
+        get { return damage_AK47; }
+        set { damage_AK47 = value; }
     }
-    public int Damage_AWP
-    {
-        get { return AWP_Damage; }
-        set { AWP_Damage = value; }
-    }
-    public int Damage_MP5
-    {
-        get { return MP5_Damage; }
-        set { MP5_Damage = value; }
-    }
-
 }
 public class DamagePowerUp
 {
-    float BoostUp = 5;
-    public float Boost_Up
-    {
-        get { return BoostUp; }
-        set { BoostUp = value; }
-    }
     //Percentage Values
-    float Berserk = 20;
-    public float berserk
+    float concentration = 10f;
+    public float Concentration
     {
-        get { return Berserk; }
-        set { Berserk = value; }
+        get { return concentration; }
+        set { concentration = value; }
     }
-
     //Base Values
+    int focus = 20;
+    public int Focus
+    {
+        get { return focus; }
+        set { focus = value; }
+    }
+}
+public class RangePowerUp
+{
+}
+public class SpeedPowerUp
+{
 }

@@ -2,58 +2,117 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eEquippedWeapons
+[System.Serializable]
+public class Items
 {
-    AK47,
-    AWP,
-    MP5
+    public string Name;
+    public string Description;
+    public int ID;
+    public GameObject Model;
+}
+public enum eEquipedWeapons
+{
+    Pistol,
+    AK47
 }
 public class GameManager : MonoBehaviour
 {
     [Header("Player_Stats")]
-    public float BaseDamage;
-    public float FinalDamage;
-    [Header("Weapons_Equipped")]
-    public eEquippedWeapons EquippedWeapons;
-
-    private void OnValidate()
+    public float basePlayerDamage;
+    public float finalPlayerDamage;
+    [Header("WeaponsEquipped")]
+    public eEquipedWeapons equipedWeapons;
+    [Header("AddEXP")]
+    public float expToAdd;
+    public float maxXP;
+    public float curXP;
+    public int playerLevel;
+    [Header("ItemsList")]
+    [SerializeField]
+    private List<Items> itemList = new();
+    public List<Items> ItemList
     {
-        #region Weapon Equipment
-        Weapon weapon = new();
-        switch (EquippedWeapons)
+        get { return itemList; }
+    }
+
+    // Start is called before the first frame update
+    void OnValidate()
+    {
+        #region WeaponEqquiped
+        Weapon weapon = new Weapon();
+        switch (equipedWeapons)
         {
-            case eEquippedWeapons.AK47:
-                FinalDamage = BaseDamage + weapon.Damage_AK47;
+            case eEquipedWeapons.Pistol:
+                finalPlayerDamage = basePlayerDamage + weapon.Damage_Pistol;
                 break;
-            case eEquippedWeapons.AWP:
-                FinalDamage = BaseDamage + weapon.Damage_AWP;
+            case eEquipedWeapons.AK47:
+                finalPlayerDamage = basePlayerDamage + weapon.Damage_AK47;
                 break;
-            case eEquippedWeapons.MP5:
-                FinalDamage = BaseDamage + weapon.Damage_MP5;
+            default:
                 break;
         }
-
         #endregion
+        ExpSystem();
     }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            BoostUpPowerUp();
+            //DamagePowerUp_Concentration();
         }
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            BerserkPowerUp();
+            //DamagePowerup_Focus();
         }
     }
-    public void BoostUpPowerUp()
+    public void DamagePowerUp_Concentration()
     {
-        DamagePowerUp damage_powerup = new();
-        FinalDamage += damage_powerup.Boost_Up;
+        DamagePowerUp powerUp = new DamagePowerUp();
+        float powerUpPlayerDamage = (finalPlayerDamage *
+        (powerUp.Concentration / 100));
+        finalPlayerDamage = powerUpPlayerDamage + finalPlayerDamage;
     }
-    public void BerserkPowerUp()
+    void DamagePowerup_Focus()
     {
-        DamagePowerUp damage_powerup = new();
-        FinalDamage += damage_powerup.berserk;
+        DamagePowerUp powerUp = new DamagePowerUp();
+        finalPlayerDamage += powerUp.Focus;
+    }
+    public void ExpSystem()
+    {
+        ExpHandler addExp = new ExpHandler();
+        playerLevel = addExp.CurrentLevel;
+        maxXP = addExp.MaxExperience;
+        curXP = addExp.CurrentExperience;
+    }
+    public void AddExp(float experienceToAdd)
+    {
+        curXP += experienceToAdd;
+        if (curXP >= maxXP)
+        {
+            LevelUp();
+        }
+    }
+    public void LevelUp()
+    {
+        playerLevel++;
+        curXP = 0f;
+        maxXP *= 1.5f; // Increase max experience by 50% on each level up
+                       // Additional actions on level up (e.g., reward skill points, update UI)
+    }
+    public void ResetValues()
+    {
+        Weapon weapon = new Weapon();
+        switch (equipedWeapons)
+        {
+            case eEquipedWeapons.Pistol:
+                finalPlayerDamage = basePlayerDamage + weapon.Damage_Pistol;
+                break;
+            case eEquipedWeapons.AK47:
+                finalPlayerDamage = basePlayerDamage + weapon.Damage_AK47;
+                break;
+            default:
+                break;
+        }
     }
 }
+
